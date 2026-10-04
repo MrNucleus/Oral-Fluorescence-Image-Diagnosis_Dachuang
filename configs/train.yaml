@@ -1,0 +1,17 @@
+# YOLO 训练超参
+#
+# model 可选：yolov8n.pt（最小最快）/ yolov8s.pt / yolov8m.pt
+# 初次基线建议先用 yolov8n.pt 跑通流程，再换更大模型。
+
+model: yolov8n.pt
+epochs: 100
+imgsz: 640
+batch: 16
+lr0: 0.01
+optimizer: auto
+patience: 20
+device: 0          # 0 = 第一块 GPU；cpu 或 -1 = 使用 CPU
+workers: 8
+seed: 42
+pretrained: true
+name: yolov8n_baseline

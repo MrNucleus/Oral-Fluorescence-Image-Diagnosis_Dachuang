@@ -1,16 +1,23 @@
-﻿torch>=2.0.0
-torchvision>=0.15.0
+# ===== 目标检测核心 =====
+# ultralytics 会自动安装匹配的 torch/torchvision
+ultralytics>=8.2.0
+torch>=2.2.0
+torchvision>=0.17.0
+
+# ===== 数据处理 =====
 numpy>=1.24.0
-pandas>=2.0.0
-Pillow>=10.0.0
 opencv-python>=4.8.0
+Pillow>=10.0.0
+PyYAML>=6.0
+pandas>=2.0.0
+
+# ===== 评估与绘图 =====
 matplotlib>=3.7.0
 seaborn>=0.12.0
 scikit-learn>=1.3.0
 scipy>=1.10.0
 tqdm>=4.65.0
-tensorboard>=2.13.0
-gradio>=3.40.0
+
+# ===== 演示与开发 =====
+gradio>=4.0.0
 jupyter>=1.0.0
-albumentations>=1.3.0
-torchcam>=0.3.0

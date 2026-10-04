@@ -6,6 +6,7 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
 .env
 
 # Jupyter
@@ -36,3 +37,11 @@ reports/figures/*
 # 日志
 *.log
 logs/
+
+# 生成的数据集（含硬链接/软链接，不入库）
+datasets/
+runs/
+
+# 训练实验产物（每次运行生成）
+experiments/*
+!experiments/.gitkeep

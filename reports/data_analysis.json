@@ -1,0 +1,437 @@
+{
+  "n_images": 590,
+  "n_annotated": 510,
+  "n_background": 80,
+  "n_patients": 83,
+  "class_instances": {
+    "l": 420,
+    "n": 152
+  },
+  "objects_per_image": {
+    "min": 0,
+    "max": 5,
+    "mean": 1.12,
+    "n_multi_object_xml": 50
+  },
+  "image_sizes_sample": [
+    "1920x1080",
+    "5184x3456"
+  ],
+  "per_patient": {
+    "001": {
+      "images": 7,
+      "annotated": 4,
+      "objects": 7
+    },
+    "002": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 8
+    },
+    "003": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "004": {
+      "images": 7,
+      "annotated": 4,
+      "objects": 4
+    },
+    "005": {
+      "images": 8,
+      "annotated": 4,
+      "objects": 4
+    },
+    "006": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 14
+    },
+    "007": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "008": {
+      "images": 8,
+      "annotated": 8,
+      "objects": 8
+    },
+    "009": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 12
+    },
+    "010": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "011": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 9
+    },
+    "012": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 11
+    },
+    "013": {
+      "images": 12,
+      "annotated": 11,
+      "objects": 16
+    },
+    "014": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 8
+    },
+    "015": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "016": {
+      "images": 9,
+      "annotated": 4,
+      "objects": 4
+    },
+    "017": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "018": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 8
+    },
+    "019": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "020": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 12
+    },
+    "021": {
+      "images": 9,
+      "annotated": 7,
+      "objects": 7
+    },
+    "022": {
+      "images": 7,
+      "annotated": 7,
+      "objects": 7
+    },
+    "023": {
+      "images": 12,
+      "annotated": 10,
+      "objects": 10
+    },
+    "024": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 12
+    },
+    "025": {
+      "images": 8,
+      "annotated": 5,
+      "objects": 5
+    },
+    "026": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 8
+    },
+    "027": {
+      "images": 8,
+      "annotated": 6,
+      "objects": 6
+    },
+    "028": {
+      "images": 11,
+      "annotated": 9,
+      "objects": 9
+    },
+    "029": {
+      "images": 10,
+      "annotated": 7,
+      "objects": 7
+    },
+    "030": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 8
+    },
+    "031": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "032": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 10
+    },
+    "033": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "034": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "035": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 12
+    },
+    "036": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "037": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "038": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "039": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "040": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "041": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "042": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "043": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "044": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "045": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "046": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "047": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "048": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "049": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 7
+    },
+    "050": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "051": {
+      "images": 9,
+      "annotated": 7,
+      "objects": 7
+    },
+    "052": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "053": {
+      "images": 9,
+      "annotated": 8,
+      "objects": 8
+    },
+    "054": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "055": {
+      "images": 8,
+      "annotated": 7,
+      "objects": 14
+    },
+    "056": {
+      "images": 9,
+      "annotated": 7,
+      "objects": 7
+    },
+    "057": {
+      "images": 10,
+      "annotated": 9,
+      "objects": 9
+    },
+    "058": {
+      "images": 10,
+      "annotated": 9,
+      "objects": 9
+    },
+    "059": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "060": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "061": {
+      "images": 7,
+      "annotated": 6,
+      "objects": 6
+    },
+    "刘艳荣": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "单景华": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "卫金花": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "吕玉霞": {
+      "images": 8,
+      "annotated": 8,
+      "objects": 8
+    },
+    "周翔": {
+      "images": 2,
+      "annotated": 2,
+      "objects": 2
+    },
+    "姚翠华": {
+      "images": 6,
+      "annotated": 6,
+      "objects": 5
+    },
+    "崔振军": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "张春芝": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "李付": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "李佳翰": {
+      "images": 2,
+      "annotated": 2,
+      "objects": 2
+    },
+    "李景涛": {
+      "images": 2,
+      "annotated": 2,
+      "objects": 2
+    },
+    "杨书兰": {
+      "images": 6,
+      "annotated": 6,
+      "objects": 6
+    },
+    "杨银书": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "毛超龙": {
+      "images": 2,
+      "annotated": 2,
+      "objects": 2
+    },
+    "汤纯梅": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 4
+    },
+    "王玉英": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 7
+    },
+    "程福全": {
+      "images": 10,
+      "annotated": 10,
+      "objects": 13
+    },
+    "赵烨": {
+      "images": 6,
+      "annotated": 6,
+      "objects": 6
+    },
+    "陈兰伏": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 7
+    },
+    "陈宏": {
+      "images": 6,
+      "annotated": 6,
+      "objects": 6
+    },
+    "马从正": {
+      "images": 4,
+      "annotated": 4,
+      "objects": 5
+    },
+    "黄旭": {
+      "images": 6,
+      "annotated": 6,
+      "objects": 6
+    }
+  }
+}
