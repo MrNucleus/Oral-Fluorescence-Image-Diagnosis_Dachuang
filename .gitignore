@@ -45,3 +45,11 @@ runs/
 # 训练实验产物（每次运行生成）
 experiments/*
 !experiments/.gitkeep
+
+# Local weights, report QA renders and editor temporary files
+weights/
+*.pt
+~$*
+reports/_qa/
+/pycharm_popup.png
+/pycharm_run_state.png

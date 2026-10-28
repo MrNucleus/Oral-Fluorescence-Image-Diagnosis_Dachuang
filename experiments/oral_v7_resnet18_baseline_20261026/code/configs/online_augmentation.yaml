@@ -1,0 +1,12 @@
+# 首轮用 geometry；比较白光曝光时改用 modality。数值是待验证的工程起点。
+# Whole-image classification only: never crop ROIs, read boxes or transform box labels.
+# Rotate onto an expanded canvas, then aspect-ratio resize/pad the full image.
+version: 1
+profile: geometry                 # baseline / geometry / modality
+horizontal_flip_probability: 0.5
+rotation_probability: 0.5
+rotation_degrees: 10.0
+standard_gain_probability: 0.3
+standard_gain_range: [0.90, 1.10]
+fluorescence_gain_probability: 0.0  # 荧光默认仅几何；独立消融时可改为0.3
+fluorescence_gain_range: [0.95, 1.05]

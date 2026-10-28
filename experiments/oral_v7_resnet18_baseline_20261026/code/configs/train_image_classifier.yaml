@@ -1,0 +1,15 @@
+# Entire RGB images -> one candidate binary class. No detection or ROI inputs.
+model: resnet18
+epochs: 100
+imgsz: 640
+batch: 16
+lr0: 0.001
+optimizer: AdamW
+weight_decay: 0.0001
+patience: 20
+device: 0  # CUDA index; use cpu or mps explicitly on Mac
+workers: 4
+seed: 42
+pretrained: true
+name: resnet18_whole_image_geometry
+augmentation_config: configs/online_augmentation.yaml

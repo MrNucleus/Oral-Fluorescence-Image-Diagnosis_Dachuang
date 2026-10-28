@@ -1,0 +1,46 @@
+# Corrected-label run: n=0 (negative), l=1 (positive).
+# EfficientNet-B3 main model, 40 total epochs, preserving the guide's
+# 20:40:40 stage ratio as 8:16:16.
+
+seed: 48
+manifest: data/processed/binary_annotated_v2/manifest.csv
+output_dir: experiments/binary_lpos_effnet40_20261019
+
+data:
+  image_size: 224
+  batch_size: 32
+  num_workers: 4
+
+training:
+  optimizer: adam
+  weight_decay: 0.0001
+  label_smoothing: 0.1
+  dropout: 0.5
+  patience: 10
+  amp: true
+  stages:
+    - name: head_only
+      epochs: 8
+      learning_rate: 0.001
+    - name: last_two_stages
+      epochs: 16
+      learning_rate: 0.0001
+    - name: full_finetune
+      epochs: 16
+      learning_rate: 0.00001
+
+models:
+  - name: efficientnet_b3
+    role: primary
+    pretrained: true
+
+selection:
+  metric: validation_accuracy
+  tie_break:
+    - validation_macro_f1
+    - validation_auroc
+
+evaluation:
+  threshold: 0.50
+  bootstrap: 1000
+

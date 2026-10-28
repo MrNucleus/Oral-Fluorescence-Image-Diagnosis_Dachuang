@@ -1,0 +1,35 @@
+# Conservative follow-up: frozen ImageNet backbone, linear-probe head only.
+# Reuses the existing annotated-image manifest and patient split.
+
+seed: 46
+manifest: data/processed/binary_annotated_v2/manifest.csv
+summary: data/processed/binary_annotated_v2/split_summary.json
+experiment_dir: experiments/binary_resnet18_frozen_seed46_lpos
+
+split:
+  ratios: [0.70, 0.15, 0.15]
+
+data:
+  image_size: 224
+  num_workers: 4
+  annotated_only: true
+
+model:
+  backbone: resnet18
+  pretrained: true
+  dropout: 0.40
+
+training:
+  batch_size: 32
+  stage1_epochs: 10
+  stage2_epochs: 0
+  stage1_lr: 0.001
+  stage2_lr: 0.0002
+  weight_decay: 0.001
+  patience: 4
+  amp: true
+
+evaluation:
+  threshold: 0.50
+  bootstrap: 1000
+

@@ -1,0 +1,35 @@
+# Reuse the existing annotated-image manifest without rebuilding it.
+# Seed 43 changes training stochasticity while keeping the same patient split.
+
+seed: 43
+manifest: data/processed/binary_annotated_v2/manifest.csv
+summary: data/processed/binary_annotated_v2/split_summary.json
+experiment_dir: experiments/binary_resnet18_annotated_seed43_lpos
+
+split:
+  ratios: [0.70, 0.15, 0.15]
+
+data:
+  image_size: 224
+  num_workers: 4
+  annotated_only: true
+
+model:
+  backbone: resnet18
+  pretrained: true
+  dropout: 0.30
+
+training:
+  batch_size: 32
+  stage1_epochs: 4
+  stage2_epochs: 10
+  stage1_lr: 0.001
+  stage2_lr: 0.0002
+  weight_decay: 0.0001
+  patience: 5
+  amp: true
+
+evaluation:
+  threshold: 0.50
+  bootstrap: 1000
+

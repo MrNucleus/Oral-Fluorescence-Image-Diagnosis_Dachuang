@@ -1,16 +1,16 @@
 # 数据集构建配置（VOC -> YOLO）
 #
-# 【重要】names / class_map 的取值需与标注方确认：
-#   l / n 的临床含义尚未最终确认。确认后修改本文件，并重新运行
-#   python scripts/prepare_data.py
+# 标签语义（2026-10-19 确认）：
+#   n = 阴性病例，编码 0
+#   l = 阳性病例，编码 1
 
 names:
-  - l
   - n
+  - l
 
 class_map:
-  l: 0
-  n: 1
+  n: 0
+  l: 1
 
 split:
   ratios: [0.7, 0.15, 0.15]   # train / val / test，按【患者】划分
