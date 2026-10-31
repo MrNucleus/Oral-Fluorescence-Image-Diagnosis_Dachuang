@@ -4,7 +4,25 @@
  
 ## 项目概述
 
-### 当前代码存档说明（2026-10-28）
+### 最新整图模型与代码入口（2026-10-31）
+
+当前优先候选是 **ImageNet预训练ResNet50 + SE + CE**，SE接在layer4输出后、全局平均池化前；最终交付模型尚未冻结。八组seed42筛选及基线/SE的42、43、44三种子复验已完成。三种子验证AUROC：基线0.8500±0.0434，SE为0.9138±0.0292；这些不是测试或临床性能。
+
+| 用途 | 最新代码 |
+|---|---|
+| 构建两类模型、训练与评价 | [image_classification.py](experiments/oral_v7_resnet18_baseline_20261026/code/src/oral_fluorescence_detection/image_classification.py)（`build_model`、`train`） |
+| SE/CBAM模块接入、损失函数 | [ablation.py](experiments/oral_v7_resnet18_baseline_20261026/code/src/oral_fluorescence_detection/ablation.py)（`ChannelAttention`、`attach_attention`、`build_loss`） |
+| 单次训练命令行入口 | [train_image_classifier.py](experiments/oral_v7_resnet18_baseline_20261026/code/scripts/train_image_classifier.py) |
+| 整图输入与在线增强 | [online_augmentation.py](experiments/oral_v7_resnet18_baseline_20261026/code/src/oral_fluorescence_detection/online_augmentation.py) |
+| 版本化缓存 | [image_cache.py](experiments/oral_v7_resnet18_baseline_20261026/code/src/oral_fluorescence_detection/image_cache.py)、[prepare_image_cache.py](scripts/prepare_image_cache.py) |
+| 八组受控比较 | [run_architecture_ablation.py](scripts/run_architecture_ablation.py) |
+| 多种子串行复验 | [run_optimization_repeats.py](scripts/run_optimization_repeats.py) |
+
+训练入口选择 `--model resnet50 --attention se --loss ce`，还需提供经授权取得的本地`dataset.json`，缓存系列另需版本相容的缓存；数据、缓存和权重不在Git仓库内。正式训练使用PyCharm配置，详见[架构与损失消融说明](docs/PyCharm架构与损失消融使用说明.md)。
+
+最新说明见[期中模型思路](docs/期中答辩材料清单与模型构建思路_2026-10-31.md)、[后续总体规划](docs/模型训练与优化总体规划_2026-10-30.md)。GitHub同步汇总报告与图表；报告引用的逐轮元数据、原始运行目录和权重哈希证据保留本地，本仓库不是完整数据/权重交付包。
+
+### 历史代码存档说明（2026-10-28）
 
 最新整图二分类实验记录见 `docs/experiments/OR-W-261027-001.md` 和
 `OR-W-261027-002.md`。对应源码快照保存在
@@ -16,6 +34,8 @@
 新版标签为 `normal_candidate` / `lesion_candidate`；来源组尚未核验为真实患者，
 不将来源组独立评价表述为患者独立评价。旧版与新版实验结果不可直接混合比较。
  
+以下为历史检测与旧版分类路线，当前整图主线以上述入口为准。
+
 针对北京大学口腔医院提供的口腔荧光图像临床数据集，采用深度学习**目标检测**方法
 （YOLO 系列）实现口腔黏膜病变的自动检测与分类，并结合可视化技术提供可解释性
 诊断依据。最终产出学术论文、软件程序与研究报告。

@@ -22,19 +22,22 @@ CONFIGS_DIR = PROJECT_ROOT / "configs"
 EXPERIMENTS_DIR = PROJECT_ROOT / "outputs/image_classifier_runs"
 
 
-def build_model(model_name, pretrained=True):
+def build_model(model_name, pretrained=True, attention="none"):
     """Initialize a classifier; pretrained tensors never imply cropping images."""
     from torch import nn
     from torchvision import models
-    choices = {"resnet18": (models.resnet18, models.ResNet18_Weights.DEFAULT),
-               "resnet34": (models.resnet34, models.ResNet34_Weights.DEFAULT),
-               "resnet50": (models.resnet50, models.ResNet50_Weights.DEFAULT)}
-    if model_name not in choices:
-        raise ValueError("Use resnet18, resnet34 or resnet50 for whole-image classification")
-    constructor, weights = choices[model_name]
-    model = constructor(weights=weights if pretrained else None)
-    model.fc = nn.Linear(model.fc.in_features, len(CLASS_NAMES))
-    return model
+    from .ablation import MODELS, attach_attention
+    if model_name not in MODELS:
+        raise ValueError(f"Unsupported model: {model_name}")
+    weights = models.get_model_weights(model_name).DEFAULT if pretrained else None
+    model = models.get_model(model_name, weights=weights)
+    if model_name.startswith("resnet"):
+        model.fc = nn.Linear(model.fc.in_features, len(CLASS_NAMES))
+    elif model_name.startswith("efficientnet"):
+        model.classifier[-1] = nn.Linear(model.classifier[-1].in_features, len(CLASS_NAMES))
+    else:
+        model.classifier = nn.Linear(model.classifier.in_features, len(CLASS_NAMES))
+    return attach_attention(model, model_name, attention)
 
 
 def resolve_device(value):
@@ -124,7 +127,10 @@ if (-not (Test-Path -LiteralPath $resume)) {
     $resume = Join-Path $runDir 'best.pt'
 }
 $log = Join-Path $runDir 'training.continue.log'
-& $python -B $trainer --data $data --resume $resume --epochs 100 2>&1 |
+$config = Join-Path $runDir 'training_config.yaml'
+$extra = @()
+if (Test-Path -LiteralPath $config) { $extra = @('--config', $config) }
+& $python -B $trainer --data $data @extra --resume $resume --epochs 100 2>&1 |
     Tee-Object -FilePath $log -Append
 exit $LASTEXITCODE
 """
@@ -207,7 +213,7 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
     cfg.update(overrides or {})
     allowed = {"model", "epochs", "imgsz", "batch", "lr0", "optimizer", "patience",
                "device", "workers", "seed", "pretrained", "name", "augmentation_config",
-               "weight_decay"}
+               "weight_decay", "attention", "loss", "label_smoothing", "focal_gamma", "cache_dir"}
     if set(cfg)-allowed:
         raise ValueError(f"Unknown classification configuration: {sorted(set(cfg)-allowed)}")
     configured_policy = cfg.pop("augmentation_config", "configs/online_augmentation.yaml")
@@ -224,14 +230,29 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
         rows = ImageClassificationDataset(data_json, split, policy, cfg["imgsz"], modes).records
         if {r["label"] for r in rows} != {0, 1}:
             raise ValueError(f"Both candidate classes required in selected {split} samples")
-    if cfg["model"] not in {"resnet18", "resnet34", "resnet50"}:
-        raise ValueError("This whole-image trainer requires a classification ResNet model")
+    from .ablation import MODELS, ATTENTIONS, LOSSES, build_loss
+    cfg.setdefault("attention", "none")
+    cfg.setdefault("loss", "ce")
+    if cfg["model"] not in MODELS or cfg["attention"] not in ATTENTIONS or cfg["loss"] not in LOSSES:
+        raise ValueError("Invalid model, attention or loss")
     if (cfg["epochs"] < 1 or cfg["batch"] < 2 or cfg["workers"] < 0
             or cfg["imgsz"] < 64 or cfg["lr0"] <= 0 or cfg["patience"] < 1):
         raise ValueError("Invalid whole-image training hyperparameters")
+    cache_dir = cfg.get("cache_dir")
+    if cache_dir:
+        from .image_cache import CachedImageClassificationDataset
+        datasets = {s: CachedImageClassificationDataset(data_json, s, policy, cfg["imgsz"],
+                    modes, cache_dir=cache_dir) for s in ("train", "val")}
+        preprocessing = {"version": "resize-before-augmentation-v1",
+                         "cache_manifest_sha256": datasets["train"].cache_manifest_sha256}
+    else:
+        datasets = {s: ImageClassificationDataset(data_json, s, policy, cfg["imgsz"], modes)
+                    for s in ("train", "val")}
+        preprocessing = {"version": "original-before-augmentation"}
     if check_only:
         result = {"dataset": summary, "augmentation": asdict(policy),
-                  "modalities": modes, "task": "image_classification", "training_executed": False}
+                  "modalities": modes, "preprocessing": preprocessing,
+                  "task": "image_classification", "training_executed": False}
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return result
 
@@ -247,15 +268,16 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
     device = resolve_device(cfg["device"])
-    datasets = {s: ImageClassificationDataset(data_json, s, policy, cfg["imgsz"], modes)
-                for s in ("train", "val")}
     loader_generators = {s: torch.Generator().manual_seed(seed) for s in ("train", "val")}
     loaders = {s: DataLoader(ds, batch_size=cfg["batch"], shuffle=s == "train",
                             num_workers=cfg["workers"], worker_init_fn=seed_worker,
                             generator=loader_generators[s], drop_last=False)
                for s, ds in datasets.items()}
+    criterion, loss_metadata = build_loss(cfg["loss"], [r["label"] for r in datasets["train"].records],
+                                         cfg.get("label_smoothing", .1), cfg.get("focal_gamma", 2.0))
+    criterion = criterion.to(device)
     resume_path = Path(resume).resolve() if resume else None
-    model = build_model(cfg["model"], bool(cfg["pretrained"]) and resume_path is None).to(device)
+    model = build_model(cfg["model"], bool(cfg["pretrained"]) and resume_path is None, cfg["attention"]).to(device)
     if cfg["optimizer"] == "AdamW":
         optimizer = torch.optim.AdamW(model.parameters(), lr=cfg["lr0"],
                                       weight_decay=cfg.get("weight_decay", .0001))
@@ -270,15 +292,17 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
         if not resume_path.is_file():
             raise ValueError(f"Resume checkpoint does not exist: {resume_path}")
         run = resume_path.parent
-    metadata = {"task": "image_classification", "config": cfg, "augmentation": asdict(policy),
-                "dataset": summary, "modalities": modes, "python": platform.python_version(),
+    metadata = {"task": "image_classification", "config": cfg, "preprocessing": preprocessing, "augmentation": asdict(policy),
+                "loss": loss_metadata, "dataset": summary, "modalities": modes, "python": platform.python_version(),
                 "torch": torch.__version__, "label_unit": "whole_image",
                 "selection": "minimum validation cross-entropy; no test evaluation",
                 "source_hashes": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                   for p in (Path(__file__), Path(__file__).with_name(
-                                      "online_augmentation.py"))}}
+                                      "online_augmentation.py"), Path(__file__).with_name("ablation.py"))}}
     if resume_path is None:
         _write_json(run / "run_config.json", metadata)
+        (run / "training_config.yaml").write_text(
+            yaml.safe_dump({**cfg, "augmentation_config": str(policy_path.resolve())}), encoding="utf-8")
     _write_continue_script(run)
 
     best_loss, stale, history = float("inf"), 0, []
@@ -294,6 +318,12 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
             raise ValueError("Resume checkpoint belongs to a different dataset manifest")
         if int(state.get("imgsz", -1)) != int(cfg["imgsz"]):
             raise ValueError("Resume checkpoint image size differs from configuration")
+        if state.get("preprocessing", {"version": "original-before-augmentation"}) != preprocessing:
+            raise ValueError("Resume preprocessing differs; use a separate new experiment")
+        if state.get("attention", "none") != cfg["attention"] or state.get("loss", {"name": "ce"}) != loss_metadata:
+            # Legacy CE checkpoints do not carry loss metadata.
+            if not ("loss" not in state and cfg["loss"] == "ce" and cfg["attention"] == state.get("attention", "none")):
+                raise ValueError("Resume attention or loss differs from configuration")
         model.load_state_dict(state["model_state_dict"])
         if state.get("optimizer_state_dict"):
             optimizer.load_state_dict(state["optimizer_state_dict"])
@@ -324,23 +354,27 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
     for epoch in range(start_epoch, int(cfg["epochs"])):
         model.train()
         train_loss, samples = 0., 0
-        for batch in loaders["train"]:
+        for batch_index, batch in enumerate(loaders["train"], start=1):
             optimizer.zero_grad(set_to_none=True)
             logits = model(batch["image"].to(device))
-            loss = nn.functional.cross_entropy(logits, batch["label"].to(device))
+            loss = criterion(logits, batch["label"].to(device))
             if not torch.isfinite(loss):
                 raise ValueError("Nonfinite classification loss")
             loss.backward()
             optimizer.step()
             samples += len(batch["label"])
             train_loss += float(loss.detach())*len(batch["label"])
+            if batch_index == 1 or batch_index % 25 == 0 or batch_index == len(loaders["train"]):
+                print(json.dumps({"phase": "train", "epoch": epoch+1,
+                                  "batch": batch_index, "batches": len(loaders["train"]),
+                                  "images_processed": samples, "train_loss": train_loss/samples}), flush=True)
         metrics, _ = evaluate_model(model, loaders["val"], device)
         history.append({"epoch": epoch+1, "train_images": samples,
                         "train_loss": train_loss/samples, "val_metrics": metrics})
         print(json.dumps(history[-1], ensure_ascii=False))
         if metrics["loss"] < best_loss:
             best_loss, stale = metrics["loss"], 0
-            checkpoint = {"task": "image_classification", "model_name": cfg["model"],
+            checkpoint = {"task": "image_classification", "preprocessing": preprocessing, "model_name": cfg["model"], "attention": cfg["attention"], "loss": loss_metadata,
                           "model_state_dict": {k: v.detach().cpu() for k, v in model.state_dict().items()},
                           "class_names": CLASS_NAMES, "imgsz": cfg["imgsz"], "epoch": epoch+1,
                           "val_metrics": metrics, "augmentation": asdict(policy), "seed": seed,
@@ -350,8 +384,10 @@ def train(data_json, config_yaml=None, name=None, overrides=None,
             stale += 1
         _write_json(run / "history.json", history)
         last_state = {
+            "preprocessing": preprocessing,
             "task": "image_classification",
             "model_name": cfg["model"],
+            "attention": cfg["attention"], "loss": loss_metadata,
             "model_state_dict": {k: v.detach().cpu() for k, v in model.state_dict().items()},
             "optimizer_state_dict": optimizer.state_dict(),
             "class_names": CLASS_NAMES,
@@ -411,7 +447,7 @@ def evaluate_checkpoint(checkpoint_path, data_json, output, device="cpu", batch=
         raise ValueError("Write evaluation outside the frozen input package")
     destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     target_device = resolve_device(device)
-    model = build_model(checkpoint["model_name"], pretrained=False)
+    model = build_model(checkpoint["model_name"], pretrained=False, attention=checkpoint.get("attention", "none"))
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(target_device)
     dataset = ImageClassificationDataset(data_json, "test", imgsz=checkpoint["imgsz"],

@@ -1,0 +1,29 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Ablation - Cache Formal Eight (reuse completed baseline)" type="PythonConfigurationType" factoryName="Python">
+    <module name="口腔荧光图像诊断_大创" />
+    <option name="ENV_FILES" value="" />
+    <option name="INTERPRETER_OPTIONS" value="-u -B" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="PYTHONIOENCODING" value="utf-8" />
+      <env name="OMP_NUM_THREADS" value="4" />
+    </envs>
+    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/Scripts/python.exe" />
+    <option name="SDK_NAME" value="Python 3.13 (口腔荧光图像诊断_大创)" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <option name="RUN_TOOL" value="" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/run_architecture_ablation.py" />
+    <option name="PARAMETERS" value="--data &quot;$PROJECT_DIR$/data/raw/oral_binary_2026-10-23/口腔整图分类_完整交接包_2026-10-21/01_图片/dataset.json&quot; --cache-dir &quot;$PROJECT_DIR$/data/cache/oral_binary_640_v1&quot; --workers 0 --reuse-baseline &quot;$PROJECT_DIR$/reports/ablation/20261029_114509&quot;" />
+    <option name="SHOW_COMMAND_LINE" value="false" />
+    <option name="EMULATE_TERMINAL" value="true" />
+    <option name="MODULE_MODE" value="false" />
+    <option name="REDIRECT_INPUT" value="false" />
+    <option name="INPUT_FILE" value="" />
+    <method v="2" />
+  </configuration>
+</component>

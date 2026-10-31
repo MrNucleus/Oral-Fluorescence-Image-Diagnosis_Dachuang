@@ -11,9 +11,12 @@ def main():
     parser.add_argument("--data", required=True, help="新版整图分类包 dataset.json")
     parser.add_argument("--config", default=str(Path(__file__).resolve().parents[1]
                                                / "configs/train_image_classifier.yaml"))
-    parser.add_argument("--model", choices=["resnet18", "resnet34", "resnet50"])
+    parser.add_argument("--model", choices=["resnet18", "resnet34", "resnet50", "efficientnet_b0", "efficientnet_b3", "densenet121"])
     for key in ("epochs", "batch", "imgsz", "workers"):
         parser.add_argument(f"--{key}", type=int)
+    parser.add_argument("--attention", choices=["none", "se", "cbam"])
+    parser.add_argument("--loss", choices=["ce", "weighted_ce", "label_smoothing", "focal"])
+    parser.add_argument("--seed", type=int)
     parser.add_argument("--device")
     parser.add_argument("--name")
     parser.add_argument("--augmentation")
@@ -24,7 +27,7 @@ def main():
     parser.add_argument("--resume", help="从 last.pt 或 best.pt 继续训练")
     args = parser.parse_args()
     from oral_fluorescence_detection.image_classification import train
-    overrides = {k: getattr(args, k) for k in ("model", "epochs", "batch", "imgsz", "device", "workers")
+    overrides = {k: getattr(args, k) for k in ("model", "epochs", "batch", "imgsz", "device", "workers", "attention", "loss", "seed")
                  if getattr(args, k) is not None}
     if args.no_pretrained:
         overrides["pretrained"] = False
