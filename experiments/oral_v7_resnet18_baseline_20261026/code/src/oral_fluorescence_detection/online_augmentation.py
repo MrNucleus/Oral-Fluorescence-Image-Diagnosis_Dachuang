@@ -169,7 +169,9 @@ def validate_handoff(dataset_json):
         c["modalities"][mode] += 1
     actual = {p.resolve() for split in counts for mode in MODALITIES
               for p in (root / split / mode / "images").rglob("*")
-              if p.is_file() and p.suffix.lower() in {".jpg", ".jpeg", ".png"}}
+              # macOS AppleDouble sidecars are metadata, never image samples.
+              if p.is_file() and not p.name.startswith("._")
+              and p.suffix.lower() in {".jpg", ".jpeg", ".png"}}
     if actual != expected:
         raise ValueError("Image inventory differs from manifest")
     for split, c in counts.items():

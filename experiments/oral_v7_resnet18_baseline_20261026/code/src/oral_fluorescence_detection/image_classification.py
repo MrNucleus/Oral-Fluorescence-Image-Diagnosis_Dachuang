@@ -448,6 +448,10 @@ def evaluate_checkpoint(checkpoint_path, data_json, output, device="cpu", batch=
     destination.mkdir(parents=True, exist_ok=False, mode=0o700)
     target_device = resolve_device(device)
     model = build_model(checkpoint["model_name"], pretrained=False, attention=checkpoint.get("attention", "none"))
+    if checkpoint.get("dropout", 0):
+        # Staged ResNet checkpoints include dropout before their new linear head.
+        from torch import nn
+        model.fc = nn.Sequential(nn.Dropout(checkpoint["dropout"]), model.fc)
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(target_device)
     dataset = ImageClassificationDataset(data_json, "test", imgsz=checkpoint["imgsz"],

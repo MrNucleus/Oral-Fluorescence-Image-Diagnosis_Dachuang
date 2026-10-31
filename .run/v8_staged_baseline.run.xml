@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="V8 - Staged ResNet50 Baseline (Section 4.3)" type="PythonConfigurationType" factoryName="Python">
+    <module name="口腔荧光图像诊断_大创" />
+    <option name="INTERPRETER_OPTIONS" value="-u -B" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="PYTHONIOENCODING" value="utf-8" />
+      <env name="OMP_NUM_THREADS" value="4" />
+    </envs>
+    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/Scripts/python.exe" />
+    <option name="SDK_NAME" value="Python 3.13 (口腔荧光图像诊断_大创)" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/train_v8_staged_baseline.py" />
+    <option name="PARAMETERS" value="--data &quot;$PROJECT_DIR$/data/raw/口腔整图分类_721完整交接包_2026-10-31_v8/01_图片/dataset.json&quot; --cache-dir &quot;$PROJECT_DIR$/data/cache/oral_v8_721_640_v1&quot; --seed 42" />
+    <option name="EMULATE_TERMINAL" value="true" />
+    <option name="MODULE_MODE" value="false" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,0 +1,108 @@
+{
+  "scope": "three architectures; seed42; no attention/loss ablations; no test evaluation",
+  "status": "complete",
+  "dataset_sha256": "ad821b42506c0203dcbaf6b646095c187470f9cd813feca65a115c0a12ae16be",
+  "cache_manifest_sha256": "78d5f38265ffe3d615ecf26a7f705a7a223f0df0fe5b3941d597e533c72891cc",
+  "selection_rule": "minimum ordinary validation CE",
+  "selected_model": "densenet121",
+  "selected_best_epoch": 39,
+  "test_evaluated": false,
+  "results": [
+    {
+      "model": "resnet50",
+      "run": "experiments/oral_v7_resnet18_baseline_20261026/code/outputs/image_classifier_runs/v8_721_resnet50_baseline_staged_seed42_20261031_181706",
+      "reused": true,
+      "epochs": 73,
+      "best_epoch": 37,
+      "validation": {
+        "images": 223,
+        "accuracy": 0.8789237668161435,
+        "sensitivity": 0.9568345323741008,
+        "specificity": 0.75,
+        "balanced_accuracy": 0.8534172661870504,
+        "auroc": 0.947756080849606,
+        "confusion_matrix": [
+          [
+            63,
+            21
+          ],
+          [
+            6,
+            133
+          ]
+        ],
+        "threshold": 0.5,
+        "loss": 0.2973649955350455
+      },
+      "seed": 42,
+      "weight_sha256": {
+        "best.pt": "085bd412891e5e62a42b4e0b68c76aa23421dd6ae2a0354b9869c27fb15e1366",
+        "last.pt": "1d61b21e4287b260fb0492c8def8528065557f70f4f6b27f92b56c9ccaccc6e2"
+      }
+    },
+    {
+      "model": "efficientnet_b3",
+      "run": "experiments/oral_v7_resnet18_baseline_20261026/code/outputs/image_classifier_runs/v8_721_efficientnet_b3_staged_seed42_20261031_200451",
+      "reused": false,
+      "epochs": 78,
+      "best_epoch": 55,
+      "validation": {
+        "images": 223,
+        "accuracy": 0.9013452914798207,
+        "sensitivity": 0.920863309352518,
+        "specificity": 0.8690476190476191,
+        "balanced_accuracy": 0.8949554642000686,
+        "auroc": 0.960517300445358,
+        "confusion_matrix": [
+          [
+            73,
+            11
+          ],
+          [
+            11,
+            128
+          ]
+        ],
+        "threshold": 0.5,
+        "loss": 0.28144168312506823
+      },
+      "seed": 42,
+      "weight_sha256": {
+        "best.pt": "0e17d13d70cf4d7262da70fc5126ebab469cbc5f236d2d71594c779a43229d32",
+        "last.pt": "b8cf31115869e41066a805caebe109af1b80cbe46faf6c630fc44050b1702aa1"
+      }
+    },
+    {
+      "model": "densenet121",
+      "run": "experiments/oral_v7_resnet18_baseline_20261026/code/outputs/image_classifier_runs/v8_721_densenet121_staged_seed42_20261031_205626",
+      "reused": false,
+      "epochs": 80,
+      "best_epoch": 39,
+      "validation": {
+        "images": 223,
+        "accuracy": 0.905829596412556,
+        "sensitivity": 0.9136690647482014,
+        "specificity": 0.8928571428571429,
+        "balanced_accuracy": 0.9032631038026722,
+        "auroc": 0.9610311750599521,
+        "confusion_matrix": [
+          [
+            75,
+            9
+          ],
+          [
+            12,
+            127
+          ]
+        ],
+        "threshold": 0.5,
+        "loss": 0.24345860920946694
+      },
+      "seed": 42,
+      "weight_sha256": {
+        "best.pt": "2db5fa7972879d628ba6ebed1296fee9e619918a6820c2431703896b78138460",
+        "last.pt": "adca827262b696609faf2cf8ce978811769406efb416484ae8879a67be368388"
+      }
+    }
+  ]
+}

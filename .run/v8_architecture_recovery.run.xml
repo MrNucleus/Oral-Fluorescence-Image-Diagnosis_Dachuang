@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="V8 - Recover DenseNet121 (I-O retry)" type="PythonConfigurationType" factoryName="Python">
+    <module name="口腔荧光图像诊断_大创" />
+    <option name="INTERPRETER_OPTIONS" value="-u -B" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="PYTHONIOENCODING" value="utf-8" />
+      <env name="OMP_NUM_THREADS" value="4" />
+    </envs>
+    <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/Scripts/python.exe" />
+    <option name="SDK_NAME" value="Python 3.13 (口腔荧光图像诊断_大创)" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/recover_v8_architecture_queue.py" />
+    <option name="PARAMETERS" value="--report &quot;$PROJECT_DIR$/reports/v8_architectures/20261031_200442_656643&quot;" />
+    <option name="EMULATE_TERMINAL" value="true" />
+    <option name="MODULE_MODE" value="false" />
+    <method v="2" />
+  </configuration>
+</component>
